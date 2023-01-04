@@ -77,20 +77,27 @@ class elvator:
 
 
     def moveToDestination(self):
-        move = None
-        if len(self.agingQueue) == 0:
+        move = [self.floor,0]
+        if len(self.agingQueue) == 0 and (len(self.internalRequestUp) != 0 or len(self.internalRequestDown) != 0):
+            if (len(self.internalRequestUp) == 0 and self.direction == 1) or (len(self.internalRequestDown) == 0 and self.direction == 0):
+            	self.direction = 1 - self.direction
             if self.direction == 1:
                 move = self.internalRequestUp.pop(0)
             else:
                 move = self.internalRequestDown.pop(len(self.internalRequestDown) - 1)
 
             self.agedMove += 1
-        else:
+        else if len(self.agingQueue) != 0:
             self.flag = True
             move = self.agingQueue.pop(0)
         if self.agedMove > self.maxAgedMove:
             self.agedMove = 0
             self.direction = 1 - self.direction
+            
+        #it needs to be completed
+        else if len(self.externalRequest) != 0:
+        	pass
+        	
         print("reached floor " + move[0])
 
 

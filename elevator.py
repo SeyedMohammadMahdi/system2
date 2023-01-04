@@ -1,4 +1,4 @@
-class elvator:
+class Elevator:
     def __init__(self):
         self.internalRequestUp = []
         self.internalRequestDown = []
@@ -11,36 +11,12 @@ class elvator:
         self.distanceCoefficient = 0.5
         self.agedMove = 0
         self.maxAgedMove = 4
-        # after exiting agingQueue
         self.flag = False
+        self.remainedFloors = 0
 
     def update(self):
         remainingTime = []
         agingRemainingTime = []
-        #
-        # for req in self.internalRequestUp:
-        #     req[1] += 1
-        #     remainingTime.append(self.floor - req[0])
-        #
-        # if len(self.agingQueue) == 0:
-        #     for i in range(len(remainingTime)):
-        #         for j in range(i):
-        #             if (remainingTime[j] > remainingTime[j + 1]):
-        #                 remainingTime[j], remainingTime[j + 1] = remainingTime[j + 1], remainingTime[j]
-        #                 self.internalRequestUp[j], self.internalRequestUp[j + 1] = self.internalRequestUp[j + 1], self.internalRequestUp[j]
-        #
-        # remainingTime.clear()
-        # for req in self.internalRequestDown:
-        #     req[1] += 1
-        #     remainingTime.append(self.floor - req[0])
-        #
-        # if len(self.agingQueue) == 0:
-        #     for i in range(len(remainingTime)):
-        #         for j in range(i):
-        #             if (remainingTime[j] > remainingTime[j + 1]):
-        #                 remainingTime[j], remainingTime[j + 1] = remainingTime[j + 1], remainingTime[j]
-        #                 self.internalRequestDown[j], self.internalRequestDown[j + 1] = self.internalRequestDown[j + 1], \
-        #                 self.internalRequestDown[j]
 
         for i in range(len(self.internalRequestUp) - 1, 0):
             if self.internalRequestUp[i][1] >= self.agedValue:
@@ -62,10 +38,10 @@ class elvator:
                 for j in range(i):
                     if agingRemainingTime[j] < agingRemainingTime[j + 1]:
                         agingRemainingTime[j], agingRemainingTime[j + 1] = agingRemainingTime[j + 1], \
-                                                                           agingRemainingTime[j]
+                            agingRemainingTime[j]
                         self.agingQueue[j], self.agingQueue[j + 1] = self.agingQueue[j + 1], self.agingQueue[j]
 
-        if (self.flag and len(self.agingQueue) == 0):
+        if self.flag and len(self.agingQueue) == 0:
             if self.floor > self.internalRequestUp[0][0]:
                 while self.floor > self.internalRequestUp[0][0]:
                     self.internalRequestDown.append(self.internalRequestUp.pop(0))
@@ -75,43 +51,66 @@ class elvator:
             self.flag = False
 
     def moveToDestination(self):
+        # print(True)
         move = [self.floor, 0]
-        if len(self.agingQueue) == 0 and (len(self.internalRequestUp) != 0 or len(self.internalRequestDown) != 0):
-            if (len(self.internalRequestUp) == 0 and self.direction == 1) or (
-                    len(self.internalRequestDown) == 0 and self.direction == 0):
-                self.direction = 1 - self.direction
-            if self.direction == 1:
-                move = self.internalRequestUp.pop(0)
-            else:
-                move = self.internalRequestDown.pop(len(self.internalRequestDown) - 1)
 
-            self.agedMove += 1
-        elif len(self.agingQueue) != 0:
-            self.flag = True
-            move = self.agingQueue.pop(0)
+        if self.remainedFloors == 0:
+            if len(self.agingQueue) == 0 and (len(self.internalRequestUp) != 0 or len(self.internalRequestDown) != 0):
+                if (len(self.internalRequestUp) == 0 and self.direction == 1) or (
+                        len(self.internalRequestDown) == 0 and self.direction == 0):
+                    self.direction = 1 - self.direction
+                if self.direction == 1:
+                    move = self.internalRequestUp.pop(0)
+                    self.remainedFloors = abs(self.floor - move[0])
+                    # self.floor += 1
+                else:
+                    move = self.internalRequestDown.pop(len(self.internalRequestDown) - 1)
+                    self.remainedFloors = abs(self.floor - move[0])
+                    # self.floor -= 1
 
-        # it needs to be completed
-        elif len(self.externalRequest) != 0:
-            print()
+                self.agedMove += 1
+            # elif len(self.agingQueue) != 0:
+            #     self.flag = True
+            #     move = self.agingQueue.pop(0)
+            #     if self.floor - move[0] > 0:
+            #         self.floor += 1
+            #     else:
+            #         self.floor -= 1
+            #
+            # # it needs to be completed
+            # elif len(self.externalRequest) != 0:
+            #     print()
+            #
+            # if self.agedMove > self.maxAgedMove:
+            #     self.agedMove = 0
+            #     self.direction = 1 - self.direction
+            # self.remainedFloors = abs(self.floor - move[0])
+        if self.remainedFloors > 0:
+            self.remainedFloors -= 1
+        if self.direction == 1:
+            self.floor += 1
+        else:
+            self.floor -= 1
 
-        if self.agedMove > self.maxAgedMove:
-            self.agedMove = 0
-            self.direction = 1 - self.direction
+        if self.floor == 15:
+            self.direction = 0
+        elif self.floor == 0:
+            self.direction = 1
 
-        print("reached floor " + move[0])
+        print("reached floor ", self.floor, self.remainedFloors)
 
     def addInternalRequest(self, destination):
-        if self.floor - destination > 0:
+        if destination - self.floor > 0:
             i = 0
-            while self.internalRequestUp[i][0] < destination:
+            while i < len(self.internalRequestUp) and self.internalRequestUp[i][0] < destination:
                 i += 1
             self.internalRequestUp.insert(i, [destination, 0])
         else:
             i = 0
-            while self.internalRequestDown[i][0] < destination:
+            while i < len(self.internalRequestDown) and self.internalRequestDown[i][0] < destination:
                 i += 1
             self.internalRequestDown.append([destination, 0])
 
-    def addExternalRequest(self, destination):
-        self.externalRequest.append(destination)
+    def addExternalRequest(self, position, destination):
+        self.externalRequest.append([position, destination])
         pass

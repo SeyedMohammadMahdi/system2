@@ -14,10 +14,9 @@ class elvator:
         # after exiting agingQueue
         self.flag = False
 
-
     def update(self):
         remainingTime = []
-        agingRamainingTime = []
+        agingRemainingTime = []
         #
         # for req in self.internalRequestUp:
         #     req[1] += 1
@@ -55,51 +54,51 @@ class elvator:
 
         for aged in self.agingQueue:
             aged[1] += 1
-            self.agingRamainingTime.append(self.distanceCoefficient * abs(self.floor - aged[0]) + self.agingCoefficient * abs(aged[1]))
+            self.agingRamainingTime.append(
+                self.distanceCoefficient * abs(self.floor - aged[0]) + self.agingCoefficient * abs(aged[1]))
 
         if len(self.agingQueue) > 0:
-            for i in range(len(agingRamainingTime)):
+            for i in range(len(agingRemainingTime)):
                 for j in range(i):
-                    if agingRamainingTime[j] < agingRamainingTime[j + 1]:
-                        agingRamainingTime[j], agingRamainingTime[j + 1] = agingRamainingTime[j + 1], \
-                        agingRamainingTime[j]
+                    if agingRemainingTime[j] < agingRemainingTime[j + 1]:
+                        agingRemainingTime[j], agingRemainingTime[j + 1] = agingRemainingTime[j + 1], \
+                                                                           agingRemainingTime[j]
                         self.agingQueue[j], self.agingQueue[j + 1] = self.agingQueue[j + 1], self.agingQueue[j]
 
-        if(self.flag and len(self.agingQueue) == 0):
+        if (self.flag and len(self.agingQueue) == 0):
             if self.floor > self.internalRequestUp[0][0]:
                 while self.floor > self.internalRequestUp[0][0]:
                     self.internalRequestDown.append(self.internalRequestUp.pop(0))
             else:
-                while self.floor < self.internalRequestDown[len(self.internalRequestDown)-1][0]:
-                    self.internalRequestUp.insert(0 , self.internalRequestDown.pop(len(self.internalRequestDown)-1))
+                while self.floor < self.internalRequestDown[len(self.internalRequestDown) - 1][0]:
+                    self.internalRequestUp.insert(0, self.internalRequestDown.pop(len(self.internalRequestDown) - 1))
             self.flag = False
 
-
-
     def moveToDestination(self):
-        move = [self.floor,0]
+        move = [self.floor, 0]
         if len(self.agingQueue) == 0 and (len(self.internalRequestUp) != 0 or len(self.internalRequestDown) != 0):
-            if (len(self.internalRequestUp) == 0 and self.direction == 1) or (len(self.internalRequestDown) == 0 and self.direction == 0):
-            	self.direction = 1 - self.direction
+            if (len(self.internalRequestUp) == 0 and self.direction == 1) or (
+                    len(self.internalRequestDown) == 0 and self.direction == 0):
+                self.direction = 1 - self.direction
             if self.direction == 1:
                 move = self.internalRequestUp.pop(0)
             else:
                 move = self.internalRequestDown.pop(len(self.internalRequestDown) - 1)
 
             self.agedMove += 1
-        else if len(self.agingQueue) != 0:
+        elif len(self.agingQueue) != 0:
             self.flag = True
             move = self.agingQueue.pop(0)
+
+        # it needs to be completed
+        elif len(self.externalRequest) != 0:
+            print()
+
         if self.agedMove > self.maxAgedMove:
             self.agedMove = 0
             self.direction = 1 - self.direction
-            
-        #it needs to be completed
-        else if len(self.externalRequest) != 0:
-        	pass
-        	
-        print("reached floor " + move[0])
 
+        print("reached floor " + move[0])
 
     def addInternalRequest(self, destination):
         if self.floor - destination > 0:
@@ -112,7 +111,6 @@ class elvator:
             while self.internalRequestDown[i][0] < destination:
                 i += 1
             self.internalRequestDown.append([destination, 0])
-
 
     def addExternalRequest(self, destination):
         self.externalRequest.append(destination)

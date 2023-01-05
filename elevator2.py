@@ -15,7 +15,20 @@ class Elevator:
 
     def moveToDest(self):
         move = [self.floor, 0]
+        # adds externalRequests to internalRequests
+        for exReq in self.externalRequest:
+            if exReq[0] == self.floor:
+                self.addInternalRequest(exReq[1])
+                self.externalRequest.remove(exReq)
         if self.remainedToDest == 0:
+
+            for req in self.internalRequestUp:
+                if req[0] == self.floor:
+                    self.internalRequestUp.remove(req)
+
+            for req in self.internalRequestDown:
+                if req[0] == self.floor:
+                    self.internalRequestDown.remove(req)
 
             # change direction if any of internalRequest lists is empty or we are in floor 0 or MAXFLOORS
             if ((not self.internalRequestUp) and self.direction == 1) \
@@ -30,6 +43,12 @@ class Elevator:
             elif self.internalRequestDown and self.direction == -1:
                 move = self.internalRequestDown.pop(0)
                 self.remainedToDest = abs(self.floor - move[0])
+            elif self.externalRequest:
+                move = self.externalRequest.pop(0)
+                self.remainedToDest = abs(self.floor - move[0])
+                self.direction = 1 if (self.floor - move[0]) < 0 else -1
+
+        print(self.floor, self.remainedToDest)
 
         self.update()
         # if direction is to down, direction value is -1.
@@ -44,7 +63,7 @@ class Elevator:
         if self.remainedToDest > 0:
             self.remainedToDest -= 1
 
-        print(self.floor, self.remainedToDest)
+
 
     def addInternalRequest(self, destination):
         # if the destination of request is in higher floor
@@ -61,7 +80,7 @@ class Elevator:
                 i += 1
             self.internalRequestDown.insert(i, [destination, 0])
 
-    def addEternalRequest(self, position, destination):
+    def addExternalRequest(self, position, destination):
         self.externalRequest.append([position, destination])
 
     def moveFromexternalToInternal(self):

@@ -16,7 +16,7 @@ while elevator.internalRequestDown or elevator.internalRequestUp or elevator.ext
     for req in request:
         req[2] -= 1
         if req[2] <= 0 and elevator.floor == req[0]:
-            elevator.addInternalRequest(req[1])
+            elevator.addExternalRequest(req[0], req[1])
             request.remove(req)
 
 

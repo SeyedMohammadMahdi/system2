@@ -29,13 +29,14 @@ class Elevator:
         for req in self.internalRequestDown:
             if req[0] == self.floor:
                 self.internalRequestDown.remove(req)
-
+        for req in self.agedRequest:
+            if req[0] == self.floor:
+                self.agedRequest.remove(req)
 
         if self.remainedToDest == 0:
             # change direction if any of internalRequest lists is empty or we are in floor 0 or MAXFLOORS
             if ((not self.internalRequestUp) and self.direction == 1) \
-                    or ((
-                        not self.internalRequestDown) and self.direction == -1) or self.floor == 0 or self.floor == self.MAXFLOORS:
+                    or ((not self.internalRequestDown) and self.direction == -1) or self.floor == 0 or self.floor == self.MAXFLOORS:
                 self.direction *= -1
             # if there is any aged request in agedRequest it will be served first
             if self.agedRequest:
@@ -73,8 +74,6 @@ class Elevator:
         # remainedToDest will be decremented
         if self.remainedToDest > 0:
             self.remainedToDest -= 1
-
-
 
     def addInternalRequest(self, destination):
         # if the destination of request is in higher floor

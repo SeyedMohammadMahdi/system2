@@ -58,8 +58,11 @@ class Elevator:
                 move = self.externalRequest.pop(0)
                 self.remainedToDest = abs(self.floor - move[0])
                 self.direction = 1 if (self.floor - move[0]) < 0 else -1
+            print("-->new destination<--: ", move[0])
 
-        print(self.floor, self.remainedToDest)
+        # print(self.floor, self.remainedToDest)
+        print("we are at floor: ", self.floor)
+
         # print(self.agedRequest)
 
         self.update()
@@ -97,6 +100,7 @@ class Elevator:
         for exReq in self.externalRequest:
             if exReq[0] == self.floor:
                 self.addInternalRequest(exReq[1])
+                print("__new person in the elevator request__: ", exReq[1])
                 self.externalRequest.remove(exReq)
 
     def update(self):

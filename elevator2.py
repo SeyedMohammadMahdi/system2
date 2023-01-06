@@ -1,9 +1,12 @@
 class Elevator:
     def __init__(self):
+        # following lists store lists with size 2 in the format of [destination, age]
         self.internalRequestUp = []
         self.internalRequestDown = []
         self.externalRequest = []
-        # above lists store lists with size 2 in the format of [destination, age]
+        self.agedRequest = []
+        # stores an age that the requests with higher ages will be added to agedRequest list
+        self.maxAged = 5
         # the floor variable stores current floor
         self.floor = 0
         # MAXFLOORS stores maximum number of floors
@@ -16,27 +19,34 @@ class Elevator:
     def moveToDest(self):
         move = [self.floor, 0]
         # adds externalRequests to internalRequests
-        for exReq in self.externalRequest:
-            if exReq[0] == self.floor:
-                self.addInternalRequest(exReq[1])
-                self.externalRequest.remove(exReq)
+        self.moveFromexternalToInternal()
+
+        # checks if any other requests destination is in this floor
+        for req in self.internalRequestUp:
+            if req[0] == self.floor:
+                self.internalRequestUp.remove(req)
+        # checks if any other requests destination is in this floor
+        for req in self.internalRequestDown:
+            if req[0] == self.floor:
+                self.internalRequestDown.remove(req)
+
+
         if self.remainedToDest == 0:
-
-            for req in self.internalRequestUp:
-                if req[0] == self.floor:
-                    self.internalRequestUp.remove(req)
-
-            for req in self.internalRequestDown:
-                if req[0] == self.floor:
-                    self.internalRequestDown.remove(req)
-
             # change direction if any of internalRequest lists is empty or we are in floor 0 or MAXFLOORS
             if ((not self.internalRequestUp) and self.direction == 1) \
                     or ((
                         not self.internalRequestDown) and self.direction == -1) or self.floor == 0 or self.floor == self.MAXFLOORS:
                 self.direction *= -1
+            # if there is any aged request in agedRequest it will be served first
+            if self.agedRequest:
+                move = self.agedRequest.pop(0)
+                self.remainedToDest = abs(self.floor - move[0])
+                if self.floor - move[0] > 0:
+                    self.direction = -1
+                else:
+                    self.direction = 1
             # if direction is up and internalRequestUp is none empty serve a request
-            if self.internalRequestUp and self.direction == 1:
+            elif self.internalRequestUp and self.direction == 1:
                 move = self.internalRequestUp.pop(0)
                 self.remainedToDest = abs(self.floor - move[0])
             # if direction is down and internalRequestDown is none empty serve a request
@@ -49,6 +59,7 @@ class Elevator:
                 self.direction = 1 if (self.floor - move[0]) < 0 else -1
 
         print(self.floor, self.remainedToDest)
+        # print(self.agedRequest)
 
         self.update()
         # if direction is to down, direction value is -1.
@@ -84,13 +95,23 @@ class Elevator:
         self.externalRequest.append([position, destination])
 
     def moveFromexternalToInternal(self):
-        pass
+        for exReq in self.externalRequest:
+            if exReq[0] == self.floor:
+                self.addInternalRequest(exReq[1])
+                self.externalRequest.remove(exReq)
 
     def update(self):
         # updating ages for each request that is in the reverse direction of elevator
+        # and checks if a request is aged then adds it to agedRequests
         if self.direction == -1:
             for req in self.internalRequestUp:
                 req[1] += 1
+                if req[1] > self.maxAged:
+                    self.agedRequest.append(req)
+                    self.internalRequestUp.remove(req)
         elif self.direction == 1:
             for req in self.internalRequestDown:
                 req[1] += 1
+                if req[1] > self.maxAged:
+                    self.agedRequest.append(req)
+                    self.internalRequestDown.remove(req)

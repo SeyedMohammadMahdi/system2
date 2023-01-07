@@ -15,9 +15,10 @@ class Elevator:
         self.direction = 1
         # remainedToDest stores the remaining number of floor to serve the current request
         self.remainedToDest = 0
+        self.move = [0, 0]
 
     def moveToDest(self):
-        move = [self.floor, 0]
+
         # adds externalRequests to internalRequests
         self.moveFromexternalToInternal()
 
@@ -36,32 +37,31 @@ class Elevator:
         if self.remainedToDest == 0:
             # change direction if any of internalRequest lists is empty or we are in floor 0 or MAXFLOORS
             if ((not self.internalRequestUp) and self.direction == 1) \
-                    or ((not self.internalRequestDown) and self.direction == -1) or self.floor == 0 or self.floor == self.MAXFLOORS:
+                    or ((not self.internalRequestDown) and self.direction == -1) or (self.floor == 0 and self.direction == -1) or (self.floor == self.MAXFLOORS and self.direction == 1):
                 self.direction *= -1
             # if there is any aged request in agedRequest it will be served first
             if self.agedRequest:
-                move = self.agedRequest.pop(0)
-                self.remainedToDest = abs(self.floor - move[0])
-                if self.floor - move[0] > 0:
+                self.move = self.agedRequest.pop(0)
+                self.remainedToDest = abs(self.floor - self.move[0])
+                if self.floor - self.move[0] > 0:
                     self.direction = -1
                 else:
                     self.direction = 1
             # if direction is up and internalRequestUp is none empty serve a request
             elif self.internalRequestUp and self.direction == 1:
-                move = self.internalRequestUp.pop(0)
-                self.remainedToDest = abs(self.floor - move[0])
+                self.move = self.internalRequestUp.pop(0)
+                self.remainedToDest = abs(self.floor - self.move[0])
             # if direction is down and internalRequestDown is none empty serve a request
             elif self.internalRequestDown and self.direction == -1:
-                move = self.internalRequestDown.pop(0)
-                self.remainedToDest = abs(self.floor - move[0])
+                self.move = self.internalRequestDown.pop(0)
+                self.remainedToDest = abs(self.floor - self.move[0])
             elif self.externalRequest:
-                move = self.externalRequest.pop(0)
-                self.remainedToDest = abs(self.floor - move[0])
-                self.direction = 1 if (self.floor - move[0]) < 0 else -1
-            print("-->new destination<--: ", move[0])
+                self.move = self.externalRequest.pop(0)
+                self.remainedToDest = abs(self.floor - self.move[0])
+                self.direction = 1 if (self.floor - self.move[0]) < 0 else -1
+            print("-->new destination<--: ", self.move[0])
 
-        # print(self.floor, self.remainedToDest)
-        print("we are at floor: ", self.floor)
+
 
         # print(self.agedRequest)
 
@@ -77,6 +77,9 @@ class Elevator:
         # remainedToDest will be decremented
         if self.remainedToDest > 0:
             self.remainedToDest -= 1
+
+        # print(self.floor, self.remainedToDest)
+        print("we are at floor: ", self.floor)
 
     def addInternalRequest(self, destination):
         # if the destination of request is in higher floor

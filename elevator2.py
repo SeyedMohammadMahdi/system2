@@ -22,25 +22,40 @@ class Elevator:
 
     def moveToDest(self):
 
-        if self.remainedToDest == 0 and self.move[0] != self.move[1] and self.move[1] != 0:
+        if self.remainedToDest == 0:
             print(f"request {self.move[0]} served")
         # adds externalRequests to internalRequests
         self.moveFromexternalToInternal()
 
         # checks if any other requests destination is in this floor
+        newInternalUp = []
         for req in self.internalRequestUp:
             if req[0] == self.floor:
-                self.internalRequestUp.remove(req)
+                # self.internalRequestUp.remove(req)
                 print(f"request {req[0]} served")
+            else:
+                newInternalUp.append(req)
+
+        self.internalRequestUp = newInternalUp
         # checks if any other requests destination is in this floor
+        newInternalDown = []
         for req in self.internalRequestDown:
             if req[0] == self.floor:
-                self.internalRequestDown.remove(req)
+                # self.internalRequestDown.remove(req)
                 print(f"request {req[0]} served")
+            else:
+                newInternalDown.append(req)
+
+        self.internalRequestDown = newInternalDown
+        newAgedReq = []
         for req in self.agedRequest:
             if req[0] == self.floor:
-                self.agedRequest.remove(req)
+                # self.agedRequest.remove(req)
                 print(f"request {req[0]} served")
+            else:
+                newAgedReq.append(req)
+
+        self.agedRequest = newAgedReq
 
         if self.remainedToDest == 0:
             self.requestExistFlag = False
@@ -118,11 +133,16 @@ class Elevator:
         self.externalRequest.append([position, destination])
 
     def moveFromexternalToInternal(self):
+        newExterReqList = []
         for exReq in self.externalRequest:
             if exReq[0] == self.floor:
                 self.addInternalRequest(exReq[1])
                 print("__new person in the elevator request__: ", exReq[1])
-                self.externalRequest.remove(exReq)
+                # self.externalRequest.remove(exReq)
+            else:
+                newExterReqList.append(exReq)
+
+        self.externalRequest = newExterReqList
 
     def update(self):
         # updating ages for each request that is in the reverse direction of elevator

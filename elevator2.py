@@ -4,7 +4,10 @@ class Elevator:
         # following lists store lists with size 2 in the format of [destination, age]
         self.internalRequestUp = []
         self.internalRequestDown = []
+        self.movedInternalRequestUp = []
+        self.movedInternalRequestDown = []
         self.externalRequest = []
+        self.movedExternal = []
         self.agedRequest = []
         # stores an age that the requests with higher ages will be added to agedRequest list
         self.maxAged = 5
@@ -20,12 +23,10 @@ class Elevator:
         self.move = [0, 0]
         # if there is a request being served
         self.requestExistFlag = False
-
         self.maxCapacity = 2
-
         self.currentCapacity = 0
-
         self.firstTime = True
+
 
     def moveToDest(self):
 
@@ -37,29 +38,29 @@ class Elevator:
 
         # checks if any other requests destination is in this floor
         newInternalUp = []
-        for req in self.internalRequestUp:
+        for req in self.movedInternalRequestUp:
             if req[0] == self.floor:
                 # self.internalRequestUp.remove(req)
-                print(f"request {req[0]} served by {self.id}")
+                print(f" \n ************************************************************ request {req[0]} served by {self.id} \n")
             else:
                 newInternalUp.append(req)
 
-        self.internalRequestUp = newInternalUp
+        self.movedInternalRequestUp = newInternalUp
         # checks if any other requests destination is in this floor
         newInternalDown = []
-        for req in self.internalRequestDown:
+        for req in self.movedInternalRequestDown:
             if req[0] == self.floor:
                 # self.internalRequestDown.remove(req)
-                print(f"request {req[0]} served by {self.id}")
+                print(f" \n ************************************************************ request {req[0]} served by {self.id} \n")
             else:
                 newInternalDown.append(req)
 
-        self.internalRequestDown = newInternalDown
+        self.movedInternalRequestDown = newInternalDown
         newAgedReq = []
         for req in self.agedRequest:
             if req[0] == self.floor:
                 # self.agedRequest.remove(req)
-                print(f"request {req[0]} served by {self.id}")
+                print(f" \n ************************************************************ request {req[0]} served by {self.id} \n")
             else:
                 newAgedReq.append(req)
 
@@ -83,21 +84,24 @@ class Elevator:
             # if direction is up and internalRequestUp is none empty serve a request
             elif self.internalRequestUp and self.direction == 1:
                 self.move = self.internalRequestUp.pop(0)
+                self.movedInternalRequestUp.append(self.move)
                 self.remainedToDest = abs(self.floor - self.move[0])
                 self.requestExistFlag = True
             # if direction is down and internalRequestDown is none empty serve a request
             elif self.internalRequestDown and self.direction == -1:
                 self.move = self.internalRequestDown.pop(0)
+                self.movedInternalRequestDown.append(self.move)
                 self.remainedToDest = abs(self.floor - self.move[0])
                 self.requestExistFlag = True
             elif self.externalRequest:
                 self.move = self.externalRequest.pop(0)
+                self.movedExternal.append(self.move)
                 self.remainedToDest = abs(self.floor - self.move[0])
                 self.direction = 1 if (self.floor - self.move[0]) < 0 else -1
                 self.requestExistFlag = True
 
             if self.requestExistFlag:
-                print("-->new destination<--: ", self.move[0])
+                print(f"-->new destination<-- by {self.id} : ", self.move[0])
 
 
 
@@ -144,15 +148,15 @@ class Elevator:
 
     def moveFromexternalToInternal(self):
         newExterReqList = []
-        for exReq in self.externalRequest:
+        for exReq in self.movedExternal:
             if exReq[0] == self.floor:
                 self.addInternalRequest(exReq[1])
-                print("__new person in the elevator request__: ", exReq[1])
+                print("__new person in the elevator requests: ", exReq[1])
                 # self.externalRequest.remove(exReq)
             else:
                 newExterReqList.append(exReq)
 
-        self.externalRequest = newExterReqList
+        self.movedExternal = newExterReqList
 
     def update(self):
         # updating ages for each request that is in the reverse direction of elevator

@@ -24,20 +24,29 @@ while elevator1.internalRequestDown or elevator1.internalRequestUp or elevator1.
     elevator2.moveToDest()
     elevator3.moveToDest()
     newReqList = []
+    flag = False
     for req in request:
         req[2] -= 1
         if elevator1.currentCapacity < elevator1.maxCapacity:
             if req[2] <= 0:
                 elevator1.addExternalRequest(req[0], req[1])
                 # request.remove(req)
+            else:
+                flag = False
         elif elevator2.currentCapacity < elevator2.maxCapacity:
             if req[2] <= 0:
+                flag = True
                 elevator2.addExternalRequest(req[0], req[1])
                 # request.remove(req)
+            else:
+                flag = False
         elif elevator3.currentCapacity < elevator3.maxCapacity:
             if req[2] <= 0:
+                flag = True
                 elevator3.addExternalRequest(req[0], req[1])
                 # request.remove(req)
-        else:
+            else:
+                flag = False
+        if not flag:
             newReqList.append(req)
     request = newReqList

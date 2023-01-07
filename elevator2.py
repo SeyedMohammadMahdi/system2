@@ -1,5 +1,6 @@
 class Elevator:
-    def __init__(self):
+    def __init__(self, id):
+        self.id = id
         # following lists store lists with size 2 in the format of [destination, age]
         self.internalRequestUp = []
         self.internalRequestDown = []
@@ -20,10 +21,17 @@ class Elevator:
         # if there is a request being served
         self.requestExistFlag = False
 
+        self.maxCapacity = 2
+
+        self.currentCapacity = 0
+
+        self.firstTime = True
+
     def moveToDest(self):
 
-        if self.remainedToDest == 0:
-            print(f"request {self.move[0]} served")
+        if self.remainedToDest == 0 and not self.firstTime:
+            print(f"request {self.move[0]} served by {self.id}")
+            self.firstTime = False
         # adds externalRequests to internalRequests
         self.moveFromexternalToInternal()
 
@@ -32,7 +40,7 @@ class Elevator:
         for req in self.internalRequestUp:
             if req[0] == self.floor:
                 # self.internalRequestUp.remove(req)
-                print(f"request {req[0]} served")
+                print(f"request {req[0]} served by {self.id}")
             else:
                 newInternalUp.append(req)
 
@@ -42,7 +50,7 @@ class Elevator:
         for req in self.internalRequestDown:
             if req[0] == self.floor:
                 # self.internalRequestDown.remove(req)
-                print(f"request {req[0]} served")
+                print(f"request {req[0]} served by {self.id}")
             else:
                 newInternalDown.append(req)
 
@@ -51,7 +59,7 @@ class Elevator:
         for req in self.agedRequest:
             if req[0] == self.floor:
                 # self.agedRequest.remove(req)
-                print(f"request {req[0]} served")
+                print(f"request {req[0]} served by {self.id}")
             else:
                 newAgedReq.append(req)
 
@@ -112,7 +120,9 @@ class Elevator:
 
         # print(self.floor, self.remainedToDest)
         if self.requestExistFlag:
-            print("we are at floor: ", self.floor)
+            print(f" elevator {self.id} at floor: ", self.floor)
+
+        self.currentCapacity = len(self.internalRequestUp) + len(self.internalRequestDown) + len(self.externalRequest) + len(self.agedRequest)
 
     def addInternalRequest(self, destination):
         # if the destination of request is in higher floor

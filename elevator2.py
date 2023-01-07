@@ -17,7 +17,7 @@ class Elevator:
         self.remainedToDest = 0
         # stores current request that is being served
         self.move = [0, 0]
-        #
+        # if there is a request being served
         self.requestExistFlag = False
 
     def moveToDest(self):

@@ -26,12 +26,14 @@ class Elevator:
         self.maxCapacity = 2
         self.currentCapacity = 0
         self.firstTime = True
+        self.info = ""
 
 
     def moveToDest(self):
-
+        self.info = ""
         if self.remainedToDest == 0 and not self.firstTime:
             print(f"request {self.move[0]} served by {self.id}")
+            self.info += f"request {self.move[0]} served by {self.id}\n"
             self.firstTime = False
         # adds externalRequests to internalRequests
         self.moveFromexternalToInternal()
@@ -42,6 +44,7 @@ class Elevator:
             if req[0] == self.floor:
                 # self.internalRequestUp.remove(req)
                 print(f" \n ************************************************************ request {req[0]} served by {self.id} \n")
+                self.info +=f" \n request {req[0]} served by {self.id} \n"
             else:
                 newInternalUp.append(req)
 
@@ -52,6 +55,7 @@ class Elevator:
             if req[0] == self.floor:
                 # self.internalRequestDown.remove(req)
                 print(f" \n ************************************************************ request {req[0]} served by {self.id} \n")
+                self.info += f" \n  request {req[0]} served by {self.id} \n"
             else:
                 newInternalDown.append(req)
 
@@ -61,6 +65,7 @@ class Elevator:
             if req[0] == self.floor:
                 # self.agedRequest.remove(req)
                 print(f" \n ************************************************************ request {req[0]} served by {self.id} \n")
+                self.info += f" \n  request {req[0]} served by {self.id} \n"
             else:
                 newAgedReq.append(req)
 
@@ -101,7 +106,8 @@ class Elevator:
                 self.requestExistFlag = True
 
             if self.requestExistFlag:
-                print(f"-->new destination<-- by {self.id} : ", self.move[0])
+                print(f"-->new destination<-- by {self.id} : {self.move[0]}")
+                self.info += f"new destination by {self.id} : {self.move[0]}\n"
 
 
 
@@ -124,7 +130,8 @@ class Elevator:
 
         # print(self.floor, self.remainedToDest)
         if self.requestExistFlag:
-            print(f" elevator {self.id} at floor: ", self.floor)
+            print(f" elevator {self.id} at floor: {self.floor}")
+            self.info += f" elevator {self.id} at floor: {self.floor}"
 
         self.currentCapacity = len(self.internalRequestUp) + len(self.internalRequestDown) + len(self.externalRequest) + len(self.agedRequest)
 
@@ -151,7 +158,8 @@ class Elevator:
         for exReq in self.movedExternal:
             if exReq[0] == self.floor:
                 self.addInternalRequest(exReq[1])
-                print("__new person in the elevator requests: ", exReq[1])
+                print(f"__new person in the elevator requests: {exReq[1]}\n")
+                self.info += f"new person in the elevator requests: {exReq[1]}\n"
                 # self.externalRequest.remove(exReq)
             else:
                 newExterReqList.append(exReq)

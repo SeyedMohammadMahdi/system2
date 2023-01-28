@@ -27,14 +27,16 @@ class Elevator:
         self.currentCapacity = 0
         self.firstTime = True
         self.info = ""
+        self.toExternalFlag = False
 
 
     def moveToDest(self):
         self.info = ""
-        if self.remainedToDest == 0 and not self.firstTime:
+        if self.remainedToDest == 0 and not self.firstTime and self.requestExistFlag and not self.toExternalFlag:
             print(f"request {self.move[0]} served by {self.id}")
             self.info += f"request {self.move[0]} served by {self.id}\n"
             self.firstTime = False
+            self.requestExistFlag = False
         # adds externalRequests to internalRequests
         self.moveFromexternalToInternal()
 
@@ -49,6 +51,18 @@ class Elevator:
                 newInternalUp.append(req)
 
         self.movedInternalRequestUp = newInternalUp
+
+        newInternalUp = []
+        for req in self.internalRequestUp:
+            if req[0] == self.floor:
+                # self.internalRequestUp.remove(req)
+                print(f" \n ************************************************************ request {req[0]} served by {self.id} \n")
+                self.info +=f" \n request {req[0]} served by {self.id} \n"
+            else:
+                newInternalUp.append(req)
+
+        self.internalRequestUp = newInternalUp
+
         # checks if any other requests destination is in this floor
         newInternalDown = []
         for req in self.movedInternalRequestDown:
@@ -60,6 +74,21 @@ class Elevator:
                 newInternalDown.append(req)
 
         self.movedInternalRequestDown = newInternalDown
+
+        newInternalDown = []
+        for req in self.internalRequestDown:
+            if req[0] == self.floor:
+                # self.internalRequestDown.remove(req)
+                print(f" \n ************************************************************ request {req[0]} served by {self.id} \n")
+                self.info += f" \n  request {req[0]} served by {self.id} \n"
+            else:
+                newInternalDown.append(req)
+
+        self.internalRequestDown = newInternalDown
+
+
+
+
         newAgedReq = []
         for req in self.agedRequest:
             if req[0] == self.floor:
@@ -73,6 +102,7 @@ class Elevator:
 
         if self.remainedToDest == 0:
             self.requestExistFlag = False
+            self.toExternalFlag = False
             # change direction if any of internalRequest lists is empty or we are in floor 0 or MAXFLOORS
             if ((not self.internalRequestUp) and self.direction == 1) \
                     or ((not self.internalRequestDown) and self.direction == -1) or (self.floor == 0 and self.direction == -1) or (self.floor == self.MAXFLOORS and self.direction == 1):
@@ -104,6 +134,7 @@ class Elevator:
                 self.remainedToDest = abs(self.floor - self.move[0])
                 self.direction = 1 if (self.floor - self.move[0]) < 0 else -1
                 self.requestExistFlag = True
+                self.toExternalFlag = True
 
             if self.requestExistFlag:
                 print(f"-->new destination<-- by {self.id} : {self.move[0]}")
@@ -117,6 +148,7 @@ class Elevator:
         self.update()
         # if direction is to down, direction value is -1.
         # if direction in to up, direction value is 1
+        print(self.requestExistFlag)
         if self.requestExistFlag:
             self.floor += self.direction
         # checks if value of floor is not negative or higher than maximum number of floors
@@ -165,6 +197,17 @@ class Elevator:
                 newExterReqList.append(exReq)
 
         self.movedExternal = newExterReqList
+
+        newExterReqList = []
+        for exReq in self.externalRequest:
+            if exReq[0] == self.floor:
+                self.addInternalRequest(exReq[1])
+                print("__new person in the elevator requests: ", exReq[1])
+                self.info += f"new person in the elevator requests: {exReq[1]}\n"
+                # self.externalRequest.remove(exReq)
+            else:
+                newExterReqList.append(exReq)
+        self.externalRequest = newExterReqList
 
     def update(self):
         # updating ages for each request that is in the reverse direction of elevator

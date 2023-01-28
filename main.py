@@ -1,4 +1,4 @@
-from elevator2 import Elevator
+from elevator import Elevator
 from GUI import MyWindow
 from PyQt5.QtWidgets import QApplication
 import sys

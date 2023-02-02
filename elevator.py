@@ -165,7 +165,8 @@ class Elevator:
             print(f" elevator {self.id} at floor: {self.floor}")
             self.info += f" elevator {self.id} at floor: {self.floor}"
 
-        self.currentCapacity = len(self.internalRequestUp) + len(self.internalRequestDown) + len(self.externalRequest) + len(self.agedRequest)
+        self.currentCapacity = len(self.internalRequestUp) + len(self.internalRequestDown) + len(self.externalRequest) + \
+            len(self.agedRequest) + len(self.movedExternal) + len(self.movedInternalRequestDown) + len(self.movedInternalRequestUp)
 
     def addInternalRequest(self, destination):
         # if the destination of request is in higher floor

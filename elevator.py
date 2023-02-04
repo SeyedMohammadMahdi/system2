@@ -36,7 +36,7 @@ class Elevator:
         self.info = ""
         if self.remainedToDest == 0 and not self.firstTime and self.requestExistFlag and not self.toExternalFlag:
             print(f"request {self.move[0]} served by {self.id}")
-            self.info += f"request {self.move[0]} served by {self.id}\n"
+            self.info += f"\nrequest {self.move[0]} served by {self.id}\n"
             self.firstTime = False
             self.requestExistFlag = False
         # adds externalRequests to internalRequests
@@ -156,7 +156,7 @@ class Elevator:
 
             if self.requestExistFlag:
                 print(f"-->new destination<-- by {self.id} : {self.move[0]}")
-                self.info += f"new destination by {self.id} : {self.move[0]}\n"
+                self.info += f"\n new destination by {self.id} : {self.move[0]}\n"
 
 
 
@@ -181,7 +181,7 @@ class Elevator:
         # print(self.floor, self.remainedToDest)
         if self.requestExistFlag:
             print(f" elevator {self.id} at floor: {self.floor}")
-            self.info += f" elevator {self.id} at floor: {self.floor}"
+            self.info += f"\n elevator {self.id} at floor: {self.floor}"
 
         self.currentCapacity = len(self.internalRequestUp) + len(self.internalRequestDown) + len(self.externalRequest) + \
             len(self.agedRequest) + len(self.movedExternal) + len(self.movedInternalRequestDown) + len(self.movedInternalRequestUp)
@@ -215,7 +215,7 @@ class Elevator:
             if exReq[0] == self.floor:
                 self.addInternalRequest(exReq[1])
                 print(f"__new person in the elevator requests: {exReq[1]}\n")
-                self.info += f"new person in the elevator requests: {exReq[1]}\n"
+                self.info += f"\nnew person in the elevator requests: {exReq[1]}\n"
                 # self.externalRequest.remove(exReq)
             else:
                 newExterReqList.append(exReq)
@@ -227,7 +227,7 @@ class Elevator:
             if exReq[0] == self.floor:
                 self.addInternalRequest(exReq[1])
                 print("__new person in the elevator requests: ", exReq[1])
-                self.info += f"new person in the elevator requests: {exReq[1]}\n"
+                self.info += f"\nnew person in the elevator requests: {exReq[1]}\n"
                 # self.externalRequest.remove(exReq)
             else:
                 newExterReqList.append(exReq)

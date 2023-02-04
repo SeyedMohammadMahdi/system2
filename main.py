@@ -37,6 +37,7 @@ while elevator1.internalRequestDown or elevator1.internalRequestUp or elevator1.
     elevator2.moveToDest()
     elevator3.moveToDest()
 
+
     updateElavator(elevator1.floor, elevator2.floor, elevator3.floor, elevator1.info, elevator2.info, elevator3.info)
     QtTest.QTest.qWait(500)
 

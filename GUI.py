@@ -20,9 +20,7 @@ class MyWindow(QMainWindow):
         self.setGeometry(200, 100, 600, 700)
         self.setWindowTitle("Elevator")
 
-        # self.label = QtWidgets.QLabel(self)
-        # self.label.setText("my first label!")
-        # self.label.move(200, 50)
+
 
         for i in range(15):
             self.elevator1.append(QtWidgets.QPushButton(self))
@@ -47,14 +45,16 @@ class MyWindow(QMainWindow):
         self.textEditor = QTextEdit(self)
         self.textEditor.move(0, 500)
         self.textEditor.resize(600, 200)
-        self.textEditor.setText("FLOOR ")
 
         self.textEditor.setReadOnly(True)
 
+
     def printInfo(self, info1, info2, info3):
+        self.textEditor.append("*****************************************************************")
         self.textEditor.append(info1)
         self.textEditor.append(info2)
         self.textEditor.append(info3)
+
 
 
     def elevatorPosition(self, position1, position2, position3):
@@ -62,8 +62,13 @@ class MyWindow(QMainWindow):
             self.elevator1[i].setStyleSheet("background-color : #02c712")
             self.elevator2[i].setStyleSheet("background-color : #02c712")
             self.elevator3[i].setStyleSheet("background-color : #02c712")
-
-        self.elevator1[position1].setStyleSheet("background-color : red")
-        self.elevator2[position2].setStyleSheet("background-color : red")
-        self.elevator3[position3].setStyleSheet("background-color : red")
+        if position1 < 1:
+            position1 = 1
+        if position2 < 1:
+            position2 = 1
+        if position3 < 1:
+            position3 = 1
+        self.elevator1[position1-1].setStyleSheet("background-color : red")
+        self.elevator2[position2-1].setStyleSheet("background-color : red")
+        self.elevator3[position3-1].setStyleSheet("background-color : red")
 
